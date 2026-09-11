@@ -1,0 +1,80 @@
+.recipe-toolbar {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.5fr) minmax(180px, 1fr) minmax(180px, 1fr) auto;
+  gap: 14px;
+  align-items: end;
+  margin-bottom: 24px;
+  padding: 16px;
+  border: 1px solid #e8e8e8;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 3px 12px rgb(0 0 0 / 4%);
+}
+
+.recipe-toolbar__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.recipe-toolbar__label {
+  color: #555555;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.recipe-toolbar__input,
+.recipe-toolbar__select {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #2b2b2b;
+  font: inherit;
+}
+
+.recipe-toolbar__input:focus,
+.recipe-toolbar__select:focus {
+  border-color: #ffb300;
+  outline: 3px solid rgb(255 179 0 / 24%);
+}
+
+.recipe-toolbar__reset-btn {
+  min-height: 42px;
+  padding: 10px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  background: #f8f8f8;
+  color: #555555;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.recipe-toolbar__reset-btn:hover {
+  background: #eeeeee;
+}
+
+.recipe-toolbar__reset-btn:focus-visible {
+  outline: 3px solid #ffb300;
+  outline-offset: 2px;
+}
+
+@media (max-width: 850px) {
+  .recipe-toolbar {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 540px) {
+  .recipe-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .recipe-toolbar__reset-btn {
+    width: 100%;
+  }
+}

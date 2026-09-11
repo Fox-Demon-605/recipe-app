@@ -1,0 +1,214 @@
+.recipe-card {
+  --card-radius: 16px;
+  --card-border: #e6e6e6;
+  --star-inactive: #a9a9a9;
+  --star-active: #ffae00;
+  --accent: #ffae00;
+
+  width: 100%;
+  max-width: 320px;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  background: #ffffff;
+  box-shadow: 0 3px 12px rgb(0 0 0 / 6%);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.recipe-card:hover {
+  transform: translateY(-4px);
+  border-color: #d8d8d8;
+  box-shadow: 0 12px 24px rgb(0 0 0 / 10%);
+}
+
+.recipe-card--favorite {
+  border-color: rgb(255 174 0 / 60%);
+}
+
+.recipe-card__image-wrapper {
+  position: relative;
+  background: #ededed;
+}
+
+.recipe-card__image {
+  display: block;
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+}
+
+.recipe-card__emoji {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 28px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 30%));
+}
+
+.recipe-card__favorite-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 92%);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 15%);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
+}
+
+.recipe-card__favorite-btn:hover {
+  transform: scale(1.08);
+  background: #ffffff;
+}
+
+.recipe-card__favorite-btn:active {
+  transform: scale(0.95);
+}
+
+.recipe-card__favorite-btn:focus-visible,
+.recipe-card__details-btn:focus-visible,
+.recipe-card__edit-btn:focus-visible,
+.recipe-card__delete-btn:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.recipe-card__star {
+  color: var(--star-inactive);
+  font-size: 24px;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.recipe-card__favorite-btn--active .recipe-card__star {
+  color: var(--star-active);
+  transform: scale(1.16);
+}
+
+.recipe-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+}
+
+.recipe-card__category {
+  align-self: flex-start;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: #f5f5f5;
+  color: #777777;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.recipe-card__title {
+  margin: 0;
+  color: #1d1d1d;
+  font-size: 1.15rem;
+  line-height: 1.25;
+}
+
+.recipe-card__description {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: #656565;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.recipe-card__meta {
+  display: flex;
+  align-items: center;
+  min-height: 24px;
+  color: #858585;
+  font-size: 0.85rem;
+}
+
+.recipe-card__time {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.recipe-card__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.recipe-card__details-btn {
+  grid-column: 1 / -1;
+}
+
+.recipe-card__details-btn,
+.recipe-card__edit-btn,
+.recipe-card__delete-btn {
+  min-height: 36px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 700;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.recipe-card__details-btn {
+  border: 1px solid #ffb300;
+  background: #fff8df;
+  color: #745500;
+}
+
+.recipe-card__details-btn:hover {
+  background: #ffedb2;
+}
+
+.recipe-card__edit-btn {
+  border: 1px solid #d6e6ff;
+  background: #f3f8ff;
+  color: #2563a9;
+}
+
+.recipe-card__edit-btn:hover {
+  background: #e5f1ff;
+}
+
+.recipe-card__delete-btn {
+  border: 1px solid #ffd6d6;
+  background: #fff4f4;
+  color: #b33131;
+}
+
+.recipe-card__delete-btn:hover {
+  background: #ffe7e7;
+}
+
+.recipe-card__details-btn:active,
+.recipe-card__edit-btn:active,
+.recipe-card__delete-btn:active {
+  transform: scale(0.98);
+}

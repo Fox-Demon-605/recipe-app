@@ -1,0 +1,40 @@
+.recipe-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 22px;
+  padding: 8px 0 32px;
+  justify-items: center;
+}
+
+.recipe-list__item {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.recipe-list__empty {
+  max-width: 500px;
+  margin: 28px auto;
+  padding: 48px 20px;
+  border: 1px dashed #d6d6d6;
+  border-radius: 16px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.recipe-list__empty-icon {
+  margin: 0 0 12px;
+  font-size: 2.5rem;
+}
+
+.recipe-list__empty-title {
+  margin: 0 0 8px;
+  color: #3d3d3d;
+  font-size: 1.2rem;
+}
+
+.recipe-list__empty-description {
+  margin: 0;
+  color: #808080;
+  line-height: 1.5;
+}
