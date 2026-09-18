@@ -15,7 +15,7 @@ const EMPTY_RECIPE = {
 
 function convertRecipeToFormData(recipe) {
   if (!recipe) {
-    return EMPTY_RECIPE;
+    return { ...EMPTY_RECIPE };
   }
 
   return {
@@ -26,11 +26,33 @@ function convertRecipeToFormData(recipe) {
     cookTimeMinutes: String(recipe.cookTimeMinutes || ""),
     category: recipe.category || "",
     emoji: recipe.emoji || "🍽",
+
+    // Каждая строка textarea — отдельный ингредиент.
     ingredients: Array.isArray(recipe.ingredients)
       ? recipe.ingredients.join("")
       : "",
+
     instructions: recipe.instructions || "",
   };
+}
+
+// Валидация именно по требованиям задания.
+function validateFormData(formData) {
+  const nextErrors = {};
+
+  if (!formData.title.trim()) {
+    nextErrors.title = "Название обязательно";
+  }
+
+  if (!formData.description.trim()) {
+    nextErrors.description = "Описание обязательно";
+  }
+
+  if (!formData.category.trim()) {
+    nextErrors.category = "Категория обязательна";
+  }
+
+  return nextErrors;
 }
 
 function RecipeFormModal({
@@ -50,10 +72,17 @@ function RecipeFormModal({
   const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState({});
 
+  // Пока заполнены не все обязательные поля,
+  // в объекте errors есть хотя бы одна ошибка.
+  const hasValidationErrors = Object.keys(errors).length > 0;
+
   useEffect(() => {
     if (isOpen) {
       setFormData(initialFormData);
-      setErrors({});
+
+      // Сразу после открытия формы вычисляем ошибки.
+      // Поэтому кнопка отправки неактивна, если обязательные поля пусты.
+      setErrors(validateFormData(initialFormData));
     }
   }, [isOpen, initialFormData]);
 
@@ -96,55 +125,34 @@ function RecipeFormModal({
   function handleChange(event) {
     const { name, value } = event.target;
 
-    setFormData((currentFormData) => ({
-      ...currentFormData,
+    const nextFormData = {
+      ...formData,
       [name]: value,
-    }));
-  }
+    };
 
-  function validateForm() {
-    const nextErrors = {};
+    setFormData(nextFormData);
 
-    if (!formData.title.trim()) {
-      nextErrors.title = "Введите название рецепта.";
-    }
+    /*
+      Ошибки пересчитываются при каждом изменении поля.
 
-    if (!formData.description.trim()) {
-      nextErrors.description = "Введите краткое описание рецепта.";
-    }
-
-    if (!formData.category.trim()) {
-      nextErrors.category = "Выберите или введите категорию.";
-    }
-
-    if (!formData.cookTime.trim()) {
-      nextErrors.cookTime = "Введите время приготовления, например: 30 мин.";
-    }
-
-    const parsedCookTime = Number(formData.cookTimeMinutes);
-
-    if (
-      !formData.cookTimeMinutes.trim() ||
-      Number.isNaN(parsedCookTime) ||
-      parsedCookTime <= 0
-    ) {
-      nextErrors.cookTimeMinutes =
-        "Введите длительность приготовления в минутах больше 0.";
-    }
-
-    if (!formData.instructions.trim()) {
-      nextErrors.instructions = "Добавьте способ приготовления.";
-    }
-
-    return nextErrors;
+      Например:
+      - пользователь вводит название;
+      - title становится непустым;
+      - ошибка «Название обязательно» сразу исчезает;
+      - когда заполнены название, описание и категория,
+        кнопка отправки автоматически становится активной.
+    */
+    setErrors(validateFormData(nextFormData));
   }
 
   function handleSubmit(event) {
     event.preventDefault();
 
-    const validationErrors = validateForm();
+    const validationErrors = validateFormData(formData);
+
     setErrors(validationErrors);
 
+    // Нельзя отправить форму, если есть хотя бы одна ошибка.
     if (Object.keys(validationErrors).length > 0) {
       return;
     }
@@ -154,13 +162,16 @@ function RecipeFormModal({
       description: formData.description.trim(),
       image: formData.image.trim(),
       cookTime: formData.cookTime.trim(),
-      cookTimeMinutes: Number(formData.cookTimeMinutes),
+      cookTimeMinutes: Number(formData.cookTimeMinutes) || 0,
       category: formData.category.trim(),
       emoji: formData.emoji.trim() || "🍽",
+
+      // Делим textarea по строкам, а пустые строки игнорируем.
       ingredients: formData.ingredients
         .split("")
         .map((ingredient) => ingredient.trim())
         .filter(Boolean),
+
       instructions: formData.instructions.trim(),
     };
 
@@ -204,7 +215,7 @@ function RecipeFormModal({
             </h2>
 
             <p className="recipe-form-modal__subtitle">
-              Заполните основные данные рецепта.
+              Поля со звёздочкой обязательны для заполнения.
             </p>
           </div>
 
@@ -218,7 +229,7 @@ function RecipeFormModal({
           </button>
         </div>
 
-        <form className="recipe-form" onSubmit={handleSubmit}>
+        <form className="recipe-form" onSubmit={handleSubmit} noValidate>
           <div className="recipe-form__grid">
             <label className="recipe-form__field recipe-form__field--full">
               <span className="recipe-form__label">Название *</span>
@@ -231,11 +242,17 @@ function RecipeFormModal({
                 placeholder="Например: Домашняя пицца"
                 autoFocus
                 aria-invalid={Boolean(errors.title)}
-                aria-describedby={errors.title ? "recipe-title-error" : undefined}
+                aria-describedby={
+                  errors.title ? "recipe-title-error" : undefined
+                }
               />
 
               {errors.title && (
-                <span id="recipe-title-error" className="recipe-form__error">
+                <span
+                  id="recipe-title-error"
+                  className="recipe-form__error"
+                  role="alert"
+                >
                   {errors.title}
                 </span>
               )}
@@ -252,6 +269,9 @@ function RecipeFormModal({
                 list="recipe-categories"
                 placeholder="Например: Десерты"
                 aria-invalid={Boolean(errors.category)}
+                aria-describedby={
+                  errors.category ? "recipe-category-error" : undefined
+                }
               />
 
               <datalist id="recipe-categories">
@@ -261,7 +281,13 @@ function RecipeFormModal({
               </datalist>
 
               {errors.category && (
-                <span className="recipe-form__error">{errors.category}</span>
+                <span
+                  id="recipe-category-error"
+                  className="recipe-form__error"
+                  role="alert"
+                >
+                  {errors.category}
+                </span>
               )}
             </label>
 
@@ -279,7 +305,7 @@ function RecipeFormModal({
             </label>
 
             <label className="recipe-form__field">
-              <span className="recipe-form__label">Время текстом *</span>
+              <span className="recipe-form__label">Время текстом</span>
 
               <input
                 type="text"
@@ -287,33 +313,23 @@ function RecipeFormModal({
                 value={formData.cookTime}
                 onChange={handleChange}
                 placeholder="Например: 45 мин"
-                aria-invalid={Boolean(errors.cookTime)}
               />
-
-              {errors.cookTime && (
-                <span className="recipe-form__error">{errors.cookTime}</span>
-              )}
             </label>
 
             <label className="recipe-form__field">
-              <span className="recipe-form__label">Минуты для сортировки *</span>
+              <span className="recipe-form__label">
+                Минуты для сортировки
+              </span>
 
               <input
                 type="number"
                 name="cookTimeMinutes"
                 value={formData.cookTimeMinutes}
                 onChange={handleChange}
-                min="1"
+                min="0"
                 step="1"
                 placeholder="45"
-                aria-invalid={Boolean(errors.cookTimeMinutes)}
               />
-
-              {errors.cookTimeMinutes && (
-                <span className="recipe-form__error">
-                  {errors.cookTimeMinutes}
-                </span>
-              )}
             </label>
 
             <label className="recipe-form__field recipe-form__field--full">
@@ -334,7 +350,7 @@ function RecipeFormModal({
             </label>
 
             <label className="recipe-form__field recipe-form__field--full">
-              <span className="recipe-form__label">Краткое описание *</span>
+              <span className="recipe-form__label">Описание *</span>
 
               <textarea
                 name="description"
@@ -343,10 +359,17 @@ function RecipeFormModal({
                 rows="3"
                 placeholder="Кратко опишите блюдо..."
                 aria-invalid={Boolean(errors.description)}
+                aria-describedby={
+                  errors.description ? "recipe-description-error" : undefined
+                }
               />
 
               {errors.description && (
-                <span className="recipe-form__error">
+                <span
+                  id="recipe-description-error"
+                  className="recipe-form__error"
+                  role="alert"
+                >
                   {errors.description}
                 </span>
               )}
@@ -368,7 +391,7 @@ function RecipeFormModal({
 
             <label className="recipe-form__field recipe-form__field--full">
               <span className="recipe-form__label">
-                Способ приготовления *
+                Способ приготовления
               </span>
 
               <textarea
@@ -377,14 +400,7 @@ function RecipeFormModal({
                 onChange={handleChange}
                 rows="7"
                 placeholder="Опишите этапы приготовления..."
-                aria-invalid={Boolean(errors.instructions)}
               />
-
-              {errors.instructions && (
-                <span className="recipe-form__error">
-                  {errors.instructions}
-                </span>
-              )}
             </label>
           </div>
 
@@ -397,7 +413,16 @@ function RecipeFormModal({
               Отмена
             </button>
 
-            <button type="submit" className="recipe-form__submit-btn">
+            <button
+              type="submit"
+              className="recipe-form__submit-btn"
+              disabled={hasValidationErrors}
+              title={
+                hasValidationErrors
+                  ? "Заполните название, описание и категорию."
+                  : undefined
+              }
+            >
               {isEditing ? "Сохранить изменения" : "Добавить рецепт"}
             </button>
           </div>
