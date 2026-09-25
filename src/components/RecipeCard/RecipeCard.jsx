@@ -1,4 +1,5 @@
 import { memo, useCallback, useState } from "react";
+import HighlightedText from "../HighlightedText/HighlightedText";
 import "./RecipeCard.css";
 
 const PLACEHOLDER_IMAGE =
@@ -7,6 +8,7 @@ const PLACEHOLDER_IMAGE =
 function RecipeCard({
   recipe,
   isFavorite,
+  searchQuery = "",
   onToggleFavorite,
   onOpenDetails,
   onEditRecipe,
@@ -103,12 +105,14 @@ function RecipeCard({
           <span className="recipe-card__category">{recipe.category}</span>
         )}
 
-        <h3 className="recipe-card__title">{recipe.title}</h3>
+        <h3 className="recipe-card__title">
+          <HighlightedText text={recipe.title} query={searchQuery} />
+        </h3>
 
         <p className="recipe-card__description">{recipe.description}</p>
 
         <div className="recipe-card__meta">
-          <span className="recipe-card__time" title="Время приготовления">
+          <span className="recipe-card__time title=Время приготовления">
             <span aria-hidden="true">⏱</span>
             {" "}
             {recipe.cookTime}
@@ -151,6 +155,7 @@ function areEqual(previousProps, nextProps) {
   return (
     previousProps.recipe === nextProps.recipe &&
     previousProps.isFavorite === nextProps.isFavorite &&
+    previousProps.searchQuery === nextProps.searchQuery &&
     previousProps.onToggleFavorite === nextProps.onToggleFavorite &&
     previousProps.onOpenDetails === nextProps.onOpenDetails &&
     previousProps.onEditRecipe === nextProps.onEditRecipe &&

@@ -176,6 +176,7 @@ function App() {
         <RecipeList
           recipes={displayedRecipes}
           favoriteIdSet={favoriteIdSet}
+          searchQuery={searchQuery}
           onToggleFavorite={toggleFavorite}
           onOpenDetails={handleOpenDetails}
           onEditRecipe={handleOpenEditForm}

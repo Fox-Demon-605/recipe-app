@@ -5,6 +5,7 @@ import "./RecipeList.css";
 function RecipeList({
   recipes,
   favoriteIdSet,
+  searchQuery,
   onToggleFavorite,
   onOpenDetails,
   onEditRecipe,
@@ -33,6 +34,7 @@ function RecipeList({
           <RecipeCard
             recipe={recipe}
             isFavorite={favoriteIdSet.has(recipe.id)}
+            searchQuery={searchQuery}
             onToggleFavorite={onToggleFavorite}
             onOpenDetails={onOpenDetails}
             onEditRecipe={onEditRecipe}

@@ -1,0 +1,7 @@
+.highlighted-text {
+  padding: 0 1px;
+  border-radius: 3px;
+  background: #ffe08a;
+  color: inherit;
+  font-weight: 700;
+}

@@ -27,9 +27,9 @@ function convertRecipeToFormData(recipe) {
     category: recipe.category || "",
     emoji: recipe.emoji || "🍽",
 
-    // Каждая строка textarea — отдельный ингредиент.
+    // Каждый элемент массива ingredients становится отдельной строкой textarea.
     ingredients: Array.isArray(recipe.ingredients)
-      ? recipe.ingredients.join("")
+      ? recipe.ingredients.join("\n") // pltcm
       : "",
 
     instructions: recipe.instructions || "",
@@ -72,16 +72,11 @@ function RecipeFormModal({
   const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState({});
 
-  // Пока заполнены не все обязательные поля,
-  // в объекте errors есть хотя бы одна ошибка.
   const hasValidationErrors = Object.keys(errors).length > 0;
 
   useEffect(() => {
     if (isOpen) {
       setFormData(initialFormData);
-
-      // Сразу после открытия формы вычисляем ошибки.
-      // Поэтому кнопка отправки неактивна, если обязательные поля пусты.
       setErrors(validateFormData(initialFormData));
     }
   }, [isOpen, initialFormData]);
@@ -131,17 +126,6 @@ function RecipeFormModal({
     };
 
     setFormData(nextFormData);
-
-    /*
-      Ошибки пересчитываются при каждом изменении поля.
-
-      Например:
-      - пользователь вводит название;
-      - title становится непустым;
-      - ошибка «Название обязательно» сразу исчезает;
-      - когда заполнены название, описание и категория,
-        кнопка отправки автоматически становится активной.
-    */
     setErrors(validateFormData(nextFormData));
   }
 
@@ -152,7 +136,6 @@ function RecipeFormModal({
 
     setErrors(validationErrors);
 
-    // Нельзя отправить форму, если есть хотя бы одна ошибка.
     if (Object.keys(validationErrors).length > 0) {
       return;
     }
@@ -166,9 +149,9 @@ function RecipeFormModal({
       category: formData.category.trim(),
       emoji: formData.emoji.trim() || "🍽",
 
-      // Делим textarea по строкам, а пустые строки игнорируем.
+      // Текст textarea делится по строкам на отдельные ингредиенты.
       ingredients: formData.ingredients
-        .split("")
+        .split("\n") //pltcm
         .map((ingredient) => ingredient.trim())
         .filter(Boolean),
 
@@ -385,7 +368,7 @@ function RecipeFormModal({
                 value={formData.ingredients}
                 onChange={handleChange}
                 rows="6"
-                placeholder={"Мука — 300 г Яйца — 2 шт. Молоко — 250 мл"}
+                placeholder={"Мука — 300 г\nЯйца — 2 шт.\nМолоко — 250 мл"}
               />
             </label>
 
